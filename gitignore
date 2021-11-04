@@ -1,0 +1,6 @@
+#pycharm project files
+.idea/
+.idea/*
+
+#compiled program
+clangcompiled
