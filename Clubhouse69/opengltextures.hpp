@@ -109,7 +109,7 @@ namespace ch69{
 
     class ImageTexture{
         public:
-            ImageTexture(const std::string& path, bool alpha_flag = true, const GLenum& min_filter = GL_LINEAR, const GLenum& mag_filter = GL_NEAREST){
+            ImageTexture(const std::string& path, bool alpha_flag = true, const GLenum& min_filter = GL_LINEAR, const GLenum& mag_filter = GL_NEAREST) {
                 unsigned char* image_data;
                 int resolution[2];
 
