@@ -49,10 +49,10 @@ namespace ch69 {
 
                     if (character_found) {
                         params.set_coords(x + x_offset,
-                                          y + font_.size - current_character.height);
-                        x_offset += current_character.width;
-                        params.set_size(current_character.width,
-                                        current_character.height);
+                                          y + (font_.size - current_character.height) * font_size / font_.size);
+                        x_offset += current_character.width * font_size / font_.size;
+                        params.set_size(current_character.width * font_size / font_.size,
+                                        current_character.height * font_size / font_.size);
                         tex_coord = {float(current_character.x) / float(font_.width), float(current_character.y) / float(font_.height),
                                      float(current_character.x + current_character.width) / float(font_.width), float(current_character.y) / float(font_.height),
                                      float(current_character.x + current_character.width) / float(font_.width), float(current_character.y + current_character.height) / float(font_.height),
@@ -68,8 +68,8 @@ namespace ch69 {
 
             void render_centered_text(const GLFWwindow& window, double x, double y, int font_size, const std::string& text) {
                 int new_x = x - (get_text_length(text, font_size) / 2);
-                render_text(window, new_x, y, font_size, text);
-
+                int new_y = y - (font_size / 2);
+                render_text(window, new_x, new_y, font_size, text);
             }
 
         private:
