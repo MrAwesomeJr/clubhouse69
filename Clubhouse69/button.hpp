@@ -6,6 +6,32 @@
 #include "input.hpp"
 
 namespace ch69 {
+    class ButtonTexture {
+        public:
+            ButtonTexture(idle_texture, hover_texture, click_texture)
+            :
+            idle_texture_(idle_texture),
+            hover_texture_(hover_texture),
+            click_texture_(click_texture)
+            {}
+
+            const ImageTexture& get_idle_texture() {
+                return idle_texture_;
+            }
+
+            const ImageTexture& get_hover_texture() {
+                return hover_texture_;
+            }
+
+            const ImageTexture& get_click_texture() {
+                return click_texture_;
+            }
+
+        private:
+            ImageTexture idle_texture_, hover_texture_, click_texture_;
+
+    }
+
     class Button {
         public:
             Button(const ImageTexture& idle_texture, const ImageTexture& hover_texture, const ImageTexture& click_texture, const Input& input, void (*click_callback)())
@@ -14,6 +40,15 @@ namespace ch69 {
             idle_texture_(idle_texture),
             hover_texture_(hover_texture),
             click_texture_(click_texture),
+            click_callback_(click_callback)
+            {}
+
+            Button(const ButtonTexture& button_texture, const Input& input, void (*click_callback)())
+            :
+            input_(input),
+            idle_texture_(button_texture.get_idle_texture()),
+            hover_texture_(button_texture.get_hover_texture()),
+            click_texture_(button_texture.get_click_texture()),
             click_callback_(click_callback)
             {}
 
