@@ -100,8 +100,6 @@ namespace ch69 {
 
             // at the moment modifier keys are ignored
             // glfw also supports joysticks
-
-
     };
 };
 

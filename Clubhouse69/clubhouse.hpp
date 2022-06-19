@@ -21,7 +21,6 @@ namespace ch69{
             window_manager_("Clubhouse69", 1280, 720),
             menlo_(Text(font_Menlo, "./resources/font/menlo/menlo.png"))
             {
-                games_count = directory_manager_.count_games();
                 directory_manager_.get_games(128, games_);
                 glOrtho(0, 1280, 720, 0, -1, 1);
             }
@@ -45,7 +44,6 @@ namespace ch69{
             WindowManager window_manager_;
             DirectoryManager directory_manager_;
             Text menlo_;
-            int games_count;
 
             enum State_ {Menu};
             State_ state_ = Menu;
@@ -66,10 +64,20 @@ namespace ch69{
                 menu_scroll_distance_ += window_manager_.get_input().get_scroll_distance()[1];
                 menlo_.render_centered_text(window_manager_.get_window(), 640, 120+menu_scroll_distance_, 64, "Clubhouse69");
 
-                for(int i = 0; i < games_count; i++) {
-                    games_[i].get_icon().get_params().set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
-                    games_[i].get_icon().get_params().set_vertices_as_rectangle();
-                    games_[i].get_icon().draw(window_manager_.get_window());
+                std::vector<Button> local_game_buttons;
+
+                for (int i = 0; i < directory_manager_.games_count; i++) {
+                    local_game_buttons.push_back(Button(games_[i].get_button_128(), window_manager_.get_input(), games_[i].get_local_execute()));
+                }
+
+                for(int i = 0; i < directory_manager_.games_count; i++) {
+                    // TODO: fix
+                    local_game_buttons[i].set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
+                    local_game_buttons[i].set_vertices_as_rectangle();
+                    local_game_buttons[i].draw(window_manager_.get_window());
+//                    local_game_buttons[i].get_params().set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
+//                    local_game_buttons[i].get_params().set_vertices_as_rectangle();
+//                    local_game_buttons[i].draw(window_manager_.get_window());
                 }
 
                 update_screen_();
