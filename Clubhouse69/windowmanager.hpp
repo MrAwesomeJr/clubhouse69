@@ -15,14 +15,14 @@ namespace ch69{
             window_height_(window_height),
             window_(*glfwCreateWindow(window_width, window_height, title.c_str(), NULL, NULL))
             {
-                glfwSetWindowUserPointer( &window_, this );
+                glfwSetWindowUserPointer(&window_, this);
                 glfwMakeContextCurrent(&window_);
-
-                glewInit();
 
                 glfwSetMouseButtonCallback(&window_, mouse_button_callback);
                 glfwSetKeyCallback(&window_, key_callback);
                 glfwSetScrollCallback(&window_, scroll_callback);
+
+                glewInit();
             }
 
             GLFWwindow& get_window(){

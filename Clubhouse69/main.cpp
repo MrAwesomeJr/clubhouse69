@@ -3,6 +3,5 @@
 
 int main(){
     ch69::Clubhouse clubhouse;
-    clubhouse.run();
-    return 0;
+    return clubhouse.run();
 }
