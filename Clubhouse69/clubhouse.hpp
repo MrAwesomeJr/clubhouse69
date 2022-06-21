@@ -11,18 +11,25 @@
 #include "directorymanager.hpp"
 #include "text.hpp"
 #include "resources/font/menlo/menlo.hpp"
+#include "callback.hpp"
 
 namespace ch69{
     class Clubhouse{
         public:
-            Clubhouse()
+            Clubhouse(int window_width, int window_height)
             :
             glfw_init_(glfwInit()),
-            window_manager_("Clubhouse69", 1280, 720),
+            window_manager_("Clubhouse69", window_width, window_height),
             menlo_(Text(font_Menlo, "./resources/font/menlo/menlo.png"))
             {
                 directory_manager_.get_games(128, games_);
-                glOrtho(0, 1280, 720, 0, -1, 1);
+                glOrtho(0, window_width, window_height, 0, -1, 1);
+
+                for (int i = 0; i < directory_manager_.games_count; i++) {
+                    games_buttons_.push_back(Button(games_[i].get_button_128(), window_manager_.get_input()));
+                }
+
+                set_state_(Menu);
             }
 
             ~Clubhouse() {
@@ -41,12 +48,22 @@ namespace ch69{
             bool glfw_init_, glew_init_;
             double menu_scroll_distance_ = 0;
             std::vector<Game> games_;
+            std::vector<Button> games_buttons_;
             WindowManager window_manager_;
             DirectoryManager directory_manager_;
             Text menlo_;
 
             enum State_ {Menu};
             State_ state_ = Menu;
+
+            void set_state_(State_ state) {
+                switch (state) {
+                    case Menu:
+                        for (int i = 0; i < directory_manager_.games_count; i++) {
+                                games_buttons_[i].set_click_callback((union Callback) games_[i].get_local_execute);
+                        }
+                }
+            }
 
             void update_screen_() {
                 glFlush();
@@ -64,20 +81,10 @@ namespace ch69{
                 menu_scroll_distance_ += window_manager_.get_input().get_scroll_distance()[1];
                 menlo_.render_centered_text(window_manager_.get_window(), 640, 120+menu_scroll_distance_, 64, "Clubhouse69");
 
-                std::vector<Button> local_game_buttons;
-
-                for (int i = 0; i < directory_manager_.games_count; i++) {
-                    local_game_buttons.push_back(Button(games_[i].get_button_128(), window_manager_.get_input(), games_[i].get_local_execute()));
-                }
-
                 for(int i = 0; i < directory_manager_.games_count; i++) {
-                    // TODO: fix
-                    local_game_buttons[i].set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
-                    local_game_buttons[i].set_vertices_as_rectangle();
-                    local_game_buttons[i].draw(window_manager_.get_window());
-//                    local_game_buttons[i].get_params().set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
-//                    local_game_buttons[i].get_params().set_vertices_as_rectangle();
-//                    local_game_buttons[i].draw(window_manager_.get_window());
+                    games_buttons_[i].set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
+                    games_buttons_[i].set_vertices_as_rectangle();
+                    games_buttons_[i].draw(window_manager_.get_window());
                 }
 
                 update_screen_();

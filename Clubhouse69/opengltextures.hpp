@@ -14,11 +14,11 @@
 namespace ch69{
     class ImageParams{
         public:
-            void set_vertices_as_rectangle(){
+            void set_vertices_as_rectangle() {
                 vertices_ = rectangular_vertices_(coords_, size_);
             }
 
-            void move(double d_x, double d_y){
+            void move(double d_x, double d_y) {
                 coords_[0] += d_x;
                 coords_[1] += d_y;
             }
@@ -27,7 +27,7 @@ namespace ch69{
                 return coords_;
             }
 
-            void set_coords(double coords_x, double coords_y){
+            void set_coords(double coords_x, double coords_y) {
                 coords_[0] = coords_x;
                 coords_[1] = coords_y;
             }
@@ -36,7 +36,7 @@ namespace ch69{
                 return size_;
             }
 
-            void set_size(int size_x, int size_y){
+            void set_size(int size_x, int size_y) {
                 size_[0] = size_x;
                 size_[1] = size_y;
             }
@@ -45,7 +45,7 @@ namespace ch69{
                 return resolution_;
             }
 
-            void set_resolution(int resolution_x, int resolution_y){
+            void set_resolution(int resolution_x, int resolution_y) {
                 resolution_[0] = resolution_x;
                 resolution_[1] = resolution_y;
             }

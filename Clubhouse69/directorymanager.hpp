@@ -5,15 +5,16 @@
 #include <string>
 #include "opengltextures.hpp"
 #include "button.hpp"
+#include "callback.hpp"
 
 namespace ch69{
     class Game {
         public:
-            Game(std::string name, ButtonTexture button_128,  int (*local_execute)())
+            Game(std::string name, ButtonTexture button_128,  std::string local_executable_path)
             :
             name_(name),
             button_128_(button_128),
-            local_execute_(local_execute)
+            local_execute_(local_executable_path)
             {}
 
             const std::string& get_name() {
@@ -24,14 +25,14 @@ namespace ch69{
                 return button_128_;
             }
 
-            void get_local_execute() {
-                return &(local_execute_)();
+            const ExecutableCallback& get_local_execute() {
+                return local_execute_;
             }
 
         private:
             const std::string name_;
             ButtonTexture button_128_;
-            const int local_execute_();
+            const ExecutableCallback local_execute_;
     };
 
     class DirectoryManager{
@@ -82,14 +83,14 @@ namespace ch69{
                closedir(games_directory);
             }
 
-            void get_local_executes(std::vector<int*>& output_list) {
+            void get_local_executable_paths(std::vector<std::string>& output_list) {
                 output_list.clear();
 
                 std::vector<std::string> games;
 
                 get_game_names(games);
                 for (int i = 0; i < games_count; i++) {
-                    output_list[i] = &(system((path_ + games[i] + "/local/main").c_str()));
+                    output_list[i] = (path_ + games[i] + "/local/main");
                 }
             }
 
@@ -165,11 +166,11 @@ namespace ch69{
                 output_list.clear();
 
                 std::vector<std::string> names;
-                std::vector<int*> local_paths;
+                std::vector<std::string> local_paths;
                 std::vector<ButtonTexture> buttons;
                 get_game_names(names);
                 get_button_textures(icon_resolution, buttons);
-                get_local_executes(local_paths);
+                get_local_executable_paths(local_paths);
 
                 for (int i = 0; i < games_count; i++) {
                     output_list.push_back(Game(names[i], buttons[i], local_paths[i]));
