@@ -34,7 +34,7 @@ namespace ch69 {
 
     class Button {
         public:
-            Button(ImageTexture idle_texture, ImageTexture hover_texture, ImageTexture click_texture, const Input& input, Callback click_callback = NullCallback())
+            Button(ImageTexture idle_texture, ImageTexture hover_texture, ImageTexture click_texture, Input& input, std::function<bool()> click_callback = NullCallback())
             :
             input_(input),
             idle_texture_(idle_texture),
@@ -43,7 +43,7 @@ namespace ch69 {
             click_callback_(click_callback)
             {}
 
-            Button(ButtonTexture& button_texture, const Input& input, Callback click_callback = (Callback) NullCallback())
+            Button(ButtonTexture& button_texture, Input& input, std::function<bool()> click_callback = NullCallback())
             :
             input_(input),
             idle_texture_(button_texture.get_idle_texture()),
@@ -55,21 +55,28 @@ namespace ch69 {
             void draw(GLFWwindow& window, bool blend_flag = true) {
                 double mouse_x, mouse_y;
                 input_.get_mouse_pos(window, mouse_x, mouse_y);
-                // questioning use of directly accessing elements
                 if (mouse_x >= idle_texture_.get_params().get_coords()[0] &&
                     mouse_x <= idle_texture_.get_params().get_coords()[0] + idle_texture_.get_params().get_size()[0] &&
                     mouse_y >= idle_texture_.get_params().get_coords()[1] &&
                     mouse_y <= idle_texture_.get_params().get_coords()[1] + idle_texture_.get_params().get_size()[1]) {
 
-                    if (input_.mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+                    if (button_held_down_) {
                         click_texture_.draw(window, blend_flag);
-                        click_callback_();
+                        if (input_.mouse_button_released(GLFW_MOUSE_BUTTON_LEFT)) {
+                            click_callback_();
+                        }
                     } else {
                         hover_texture_.draw(window, blend_flag);
                     }
                 } else {
                     idle_texture_.draw(window, blend_flag);
                 };
+
+                if (input_.mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+                    button_held_down_ = true;
+                } else if (input_.mouse_button_released(GLFW_MOUSE_BUTTON_LEFT)) {
+                    button_held_down_ = false;
+                }
             }
 
             void draw_unclickable(GLFWwindow& window, bool blend_flag = true){
@@ -80,22 +87,30 @@ namespace ch69 {
                     mouse_y >= idle_texture_.get_params().get_coords()[1] &&
                     mouse_y <= idle_texture_.get_params().get_coords()[1] + idle_texture_.get_params().get_size()[1]) {
 
-                    if (input_.mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+                    if (button_held_down_) {
                         click_texture_.draw(window, blend_flag);
-                        click_callback_();
+                        if (input_.mouse_button_released(GLFW_MOUSE_BUTTON_LEFT)) {
+                            click_callback_();
+                        }
                     } else {
                         hover_texture_.draw(window, blend_flag);
                     }
                 } else {
                     idle_texture_.draw(window, blend_flag);
                 };
+
+                if (input_.mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+                    button_held_down_ = true;
+                } else if (input_.mouse_button_released(GLFW_MOUSE_BUTTON_LEFT)) {
+                    button_held_down_ = false;
+                }
             }
 
-            void set_click_callback(Callback& click_callback) {
+            void set_click_callback(std::function<bool()> click_callback) {
                 click_callback_ = click_callback;
             }
 
-            Callback get_click_callback() {
+            std::function<bool()> get_click_callback() {
                 return click_callback_;
             }
 
@@ -148,9 +163,10 @@ namespace ch69 {
             }
 
         private:
-            Input input_;
+            Input& input_;
+            std::function<bool()> click_callback_;
+            bool button_held_down_ = false;
             ImageTexture idle_texture_, hover_texture_, click_texture_;
-            Callback click_callback_;
     };
 }
 

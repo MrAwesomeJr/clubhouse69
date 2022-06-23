@@ -83,27 +83,32 @@ namespace ch69{
                closedir(games_directory);
             }
 
-            void get_local_executable_paths(std::vector<std::string>& output_list) {
+            void get_local_executables(std::vector<std::string>& output_list) {
                 output_list.clear();
 
                 std::vector<std::string> games;
 
                 get_game_names(games);
                 for (int i = 0; i < games_count; i++) {
-                    output_list[i] = (path_ + games[i] + "/local/main");
+                    if (file_exists_in_directory("main", path_ + games[i] + "/local")) {
+                        output_list.push_back(path_ + games[i] + "/local/main");
+                    } else if (file_exists_in_directory("main.py", path_ + games[i] + "/local")) {
+                        output_list.push_back("python3 " + path_ + games[i] + "/local/main.py");
+                    }
                 }
             }
 
             void get_button_textures(int resolution, std::vector<ButtonTexture>& output_list) {
+                // TODO: fix
                 // icons default to idle when other textures don't exist.
                 // icons are found in game/icon/
                 output_list.clear();
                 std::vector<std::string> games;
                 get_game_names(games);
 
-                ImageTexture hover_texture = ImageTexture("./resources/images/tps.png");
                 ImageTexture idle_texture = ImageTexture("./resources/images/tps.png");
-                ImageTexture click_texture = ImageTexture("./resources/images/tps.png");
+                ImageTexture hover_texture = ImageTexture("./games/a/icon/128_idle.png");
+                ImageTexture click_texture = ImageTexture("./games/pyfrick/icon/128_idle.png");
 
                 for (int i = 0; i < games_count; i++) {
 //                    idle_texture = get_idle_texture(resolution, games[i]);
@@ -162,18 +167,18 @@ namespace ch69{
                 return icon_texture;
             }
 
-            void get_games(int icon_resolution, std::vector<Game>& output_list) {
+            void get_games(std::vector<Game>& output_list) {
                 output_list.clear();
 
                 std::vector<std::string> names;
-                std::vector<std::string> local_paths;
+                std::vector<std::string> executables;
                 std::vector<ButtonTexture> buttons;
                 get_game_names(names);
-                get_button_textures(icon_resolution, buttons);
-                get_local_executable_paths(local_paths);
+                get_button_textures(128, buttons);
+                get_local_executables(executables);
 
                 for (int i = 0; i < games_count; i++) {
-                    output_list.push_back(Game(names[i], buttons[i], local_paths[i]));
+                    output_list.push_back(Game(names[i], buttons[i], executables[i]));
                 }
             }
 

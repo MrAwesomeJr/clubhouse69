@@ -25,7 +25,11 @@ namespace ch69 {
             }
 
             bool mouse_button_pressed(int button) {
-                return pressed_mouse_buttons_[button] == 1;
+                return (pressed_mouse_buttons_[button] == 1);
+            }
+
+            bool mouse_button_released(int button) {
+                return (pressed_mouse_buttons_[button] == -1);
             }
 
             bool key_pressed(int button) {
@@ -38,7 +42,7 @@ namespace ch69 {
                 return pressed;
             }
 
-            void get_mouse_pos(GLFWwindow& window, double mouse_x, double mouse_y) {
+            void get_mouse_pos(GLFWwindow& window, double& mouse_x, double& mouse_y) {
                 glfwGetCursorPos(&window, &mouse_x, &mouse_y);
             }
 

@@ -22,14 +22,12 @@ namespace ch69{
             window_manager_("Clubhouse69", window_width, window_height),
             menlo_(Text(font_Menlo, "./resources/font/menlo/menlo.png"))
             {
-                directory_manager_.get_games(128, games_);
+                directory_manager_.get_games(games_);
                 glOrtho(0, window_width, window_height, 0, -1, 1);
 
                 for (int i = 0; i < directory_manager_.games_count; i++) {
                     games_buttons_.push_back(Button(games_[i].get_button_128(), window_manager_.get_input()));
                 }
-
-                set_state_(Menu);
             }
 
             ~Clubhouse() {
@@ -37,6 +35,8 @@ namespace ch69{
             }
 
             int run() {
+                set_state_(Menu);
+
                 while (state_ == Menu && !glfwWindowShouldClose(&window_manager_.get_window())){
                     render_menu_();
                 }
@@ -60,7 +60,7 @@ namespace ch69{
                 switch (state) {
                     case Menu:
                         for (int i = 0; i < directory_manager_.games_count; i++) {
-                                games_buttons_[i].set_click_callback((union Callback) games_[i].get_local_execute);
+                            games_buttons_[i].set_click_callback(games_[i].get_local_execute());
                         }
                 }
             }
@@ -73,6 +73,7 @@ namespace ch69{
             }
 
             void render_menu_() {
+                update_screen_();
                 glClear(GL_COLOR_BUFFER_BIT);
                 glClearColor(0, 0, 0, 1.0);
                 glColor3f(1,1,1);
@@ -83,11 +84,10 @@ namespace ch69{
 
                 for(int i = 0; i < directory_manager_.games_count; i++) {
                     games_buttons_[i].set_coords(240+(i%3)*320, menu_scroll_distance_+240+((int)i/3)*320);
+                    games_buttons_[i].set_size(128, 128);
                     games_buttons_[i].set_vertices_as_rectangle();
                     games_buttons_[i].draw(window_manager_.get_window());
                 }
-
-                update_screen_();
             }
     };
 }

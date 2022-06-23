@@ -4,16 +4,17 @@
 #include "cstdlib"
 
 namespace ch69 {
-    union Callback {
-        NullCallback;
-        ExecutableCallback;
-    }
-
     class NullCallback {
         public:
-            NullCallback() {}
+            bool operator()() {return 0;}
+    };
 
-        bool operator()() {}
+    class HelloCallback {
+        public:
+            bool operator()() {
+                std::cout << "hello" << std::endl;
+                return 0;
+            }
     };
 
     class ExecutableCallback {
@@ -24,7 +25,7 @@ namespace ch69 {
             {}
 
             bool operator()() {
-                return std::system(command_);
+                return std::system(command_.c_str());
             }
 
         private:
@@ -32,4 +33,4 @@ namespace ch69 {
     };
 }
 
-#endif CALLBACK_HPP_DEFINED
+#endif // CALLBACK_HPP_DEFINED

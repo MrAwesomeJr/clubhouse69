@@ -119,6 +119,7 @@ namespace ch69{
                 }
 
                 params_.set_resolution(resolution[0], resolution[1]);
+                params_.set_size(resolution[0], resolution[1]);
 
                 glGenTextures(1, &texture_);
                 glActiveTexture(texture_);
@@ -140,9 +141,13 @@ namespace ch69{
             void set_params(const ImageParams& params) {
                 params_ = params;
             }
+
+            void set_texture(int input) {
+                texture_ = input;
+            }
             
 
-            void draw(const GLFWwindow& window, bool blend_flag = true){
+            void draw(const GLFWwindow& window, bool blend_flag = true) {
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 glActiveTexture(texture_);
