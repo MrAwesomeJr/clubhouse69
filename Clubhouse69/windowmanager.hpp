@@ -18,6 +18,9 @@ namespace ch69{
                 glfwSetWindowUserPointer(&window_, this);
                 glfwMakeContextCurrent(&window_);
 
+                // Prevents resizing. Might update in future.
+                glfwSetWindowSizeLimits(&window_, window_width, window_height, window_width, window_height);
+
                 glfwSetMouseButtonCallback(&window_, mouse_button_callback);
                 glfwSetKeyCallback(&window_, key_callback);
                 glfwSetScrollCallback(&window_, scroll_callback);

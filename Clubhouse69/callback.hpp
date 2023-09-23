@@ -19,13 +19,14 @@ namespace ch69 {
 
     class ExecutableCallback {
         public:
-            ExecutableCallback(std::string command)
+            ExecutableCallback(const std::string& command)
             :
             command_(command)
             {}
 
             bool operator()() {
-                return std::system(command_.c_str());
+                // & causes the command to run asynchronously in the background, preventing the main program from locking
+                return std::system((command_ + " &").c_str());
             }
 
         private:

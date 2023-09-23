@@ -26,7 +26,8 @@ namespace ch69 {
             }
 
             void render_text(const GLFWwindow& window, double x, double y, int font_size, const std::string& text) {
-                /* origin_x and origin_y define the bottom left corner relative to x and y in the font data
+                /* origin_x and origin_y define the bottom left corner relative to x and y in the font data.
+                the point referenced by origin_x and origin_y should be fixed, which means the texture is moved based on this point.
                 the top left corner is (x, y - height)
                 the bottom right corner is (x + width, y)*/
                 int x_offset = 0;
@@ -48,8 +49,8 @@ namespace ch69 {
                     }
 
                     if (character_found) {
-                        params.set_coords(x + x_offset,
-                                          y + (font_.size - current_character.height) * font_size / font_.size);
+                        params.set_coords(x - current_character.origin_x + x_offset,
+                                          y - current_character.origin_y + (font_.size - current_character.height) * font_size / font_.size);
                         x_offset += current_character.width * font_size / font_.size;
                         params.set_size(current_character.width * font_size / font_.size,
                                         current_character.height * font_size / font_.size);

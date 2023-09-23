@@ -79,7 +79,7 @@ namespace ch69{
                 glColor3f(1,1,1);
 
                 // display menu buttons
-                menu_scroll_distance_ += window_manager_.get_input().get_scroll_distance()[1];
+                menu_scroll_distance_ += window_manager_.get_input().get_scroll_distance()[1]*2;
                 menlo_.render_centered_text(window_manager_.get_window(), 640, 120+menu_scroll_distance_, 64, "Clubhouse69");
 
                 for(int i = 0; i < directory_manager_.games_count; i++) {
