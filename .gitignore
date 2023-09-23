@@ -1,0 +1,9 @@
+#pycharm project files
+.idea/
+.idea/*
+
+#compiled program
+clangcompiled
+
+#stupid mac file
+.DS_Store
